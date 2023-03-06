@@ -6,12 +6,14 @@ import android.graphics.Color
 import android.graphics.PointF
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.recyclerview.widget.RecyclerView
 import com.yandex.mapkit.*
 import com.yandex.mapkit.directions.DirectionsFactory
 import com.yandex.mapkit.directions.driving.DrivingOptions
@@ -46,10 +48,12 @@ class MainActivity : AppCompatActivity(), UserLocationObjectListener, Session.Se
     private val SCREEN_CENTER = Point((ROUTE_START_LOCATION.latitude+ROUTE_END_LOCATION.latitude)/2,
         (ROUTE_START_LOCATION.longitude+ROUTE_END_LOCATION.longitude)/2
     )
+    lateinit var recyclerView: RecyclerView
+
     private var mapObjects:MapObjectCollection? = null
     private var drivingRouter: DrivingRouter? = null
     private var drivingSession: DrivingSession? = null
-
+    lateinit var btn_lv: Button
 
     private fun submitQuery(query:String){
         searchSession = searchManager.submit(query, VisibleRegionUtils.toPolygon(mapView.map.visibleRegion), SearchOptions(), this)
@@ -78,6 +82,19 @@ class MainActivity : AppCompatActivity(), UserLocationObjectListener, Session.Se
                 trafficButton.setBackgroundResource(R.drawable.blueoff)
             }
         }
+        recyclerView = findViewById(R.id.recyclerview)
+        btn_lv = findViewById(R.id.btn_lv)
+        var opened = false;
+        btn_lv.setOnClickListener{
+            if(opened){
+                recyclerView.visibility = View.VISIBLE
+                !opened
+            }else{
+                recyclerView.visibility = View.INVISIBLE
+                !opened
+            }
+        }
+
         locationMapKit = mapKit.createUserLocationLayer(mapView.mapWindow)
         locationMapKit.isVisible = false
         locationMapKit.setObjectListener(this)
